@@ -15,9 +15,7 @@ To run MPC in gazebo, download the *src* folder. Go to the directory where *src*
 run the following commands from the root folder(where src is placed) for completing the setup. These commands should be run everytime before running the simulation.
 - *. install/local_setup.bash*
 - *export TURTLEBOT3_MODEL=burger*
-- *export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:`ros2 pkg \
-prefix turtlebot3_gazebo \
-`/share/turtlebot3_gazebo/models/*
+- *export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:`ros2 pkg \prefix turtlebot3_gazebo \`/share/turtlebot3_gazebo/models/*
 
 After completing the setup run the following command for spawning the robot and world in gazebo, *ros2 launch gazbeosim world_with_robot_new.launch.py*. Then run the 
 following command for runing MPC in gazebo *ros2 run planner MPC*.
