@@ -7,4 +7,5 @@ To run the global planners in 2d, download the files from *global planners* fold
 - *python3 batch_informed_trees.py* for BIT*
 - *python3 adaptively_informed_trees_star.py* for AIT*
 - *python3 rrt.py* for RRT
-TO run the MPC in 2d, download the file from folder *local planner* and run *python3 MPC.py*
+
+To run the MPC in 2d, download the file from folder *local planner* and run *python3 MPC.py*
