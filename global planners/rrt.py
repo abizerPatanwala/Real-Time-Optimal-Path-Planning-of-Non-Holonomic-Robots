@@ -124,11 +124,26 @@ def main():
     cost_list = [[75]*(len(rrt.count_list) - 1)]
     cost_list[0].append(cost)
     print(cost_list)
+    
+    plt.figure()
     plt.plot(rrt.count_list, rrt.no_of_nodes)
+    plt.title('RRT: No. of Nodes Explored vs No. of Iterations')
+    plt.legend()
+    plt.xlabel('No. of Iterations')
+    plt.ylabel('No. of Nodes')
     plt.show()
+    
+    plt.figure()
     cost_list = np.reshape(cost_list, (len(rrt.count_list, )))
     plt.plot(rrt.count_list, cost_list)
+    plt.title('RRT: Cost vs No. of Iterations')
+    plt.legend()
+    plt.xlabel('No. of Iterations')
+    plt.ylabel('Cost')
     plt.show()
+    
 
 if __name__ == '__main__':
     main()
+
+
