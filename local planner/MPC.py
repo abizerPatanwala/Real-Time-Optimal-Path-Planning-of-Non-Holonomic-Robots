@@ -269,7 +269,7 @@ def main():
     sensorRad = 0.02
     
     angleDiff = math.pi / (numRays - 1)
-    obsx = [21.5, 22]
+    obsx = [20.5, 21]
     obsy = [12, 12.5]
     RectW = obsx[1] - obsx[0]
     RectH = obsy[1] - obsy[0]
@@ -281,6 +281,8 @@ def main():
     iter_list = []
     opt_time = []
     path_deviation = []
+    dynm_thresh = 2.85
+    velObs = 0.07
     while(True):
         startTime = time.time()
         #diff_array = np.absolute(timeStamp-(currTime + timeHorizon))
@@ -290,7 +292,13 @@ def main():
         iter = iter + 1
         path_deviation.append(math.sqrt((robot.currState[0] - pathDes[count][0])**2 + (robot.currState[1] - pathDes[count][1])**2))
         
-    
+        
+        if math.sqrt((robot.currState[0] - obsx[0])**2 + (robot.currState[1] - obsy[0])**2) <= dynm_thresh:
+            obsx[0] = obsx[0] + velObs*stepTime
+            obsy[0] = obsy[0] + velObs*stepTime
+            obsx[1] = obsx[1] + velObs*stepTime
+            obsy[1] = obsy[1] + velObs*stepTime
+        
         sensorCenter = [robot.currState[0] + (L/2 + 2*sensorRad)*math.cos(robot.currState[2]), robot.currState[1] + (L/2 + 2*sensorRad)*math.sin(robot.currState[2])]
         for j in range(numRays):
             currTheta  = robot.currState[2] - math.pi/2 + j*angleDiff
@@ -356,8 +364,16 @@ def main():
             
     #Initialize figure
     plt.plot(iter_list, opt_time)
+    plt.title("optimization time vs No of control steps ")
+    plt.xlabel("No of Control steps")
+    plt.ylabel("Optimization time")
     plt.show()
+    
     plt.plot(iter_list, path_deviation[0:len(path_deviation) - 1])
+    plt.title("Pah deviation vs No of control steps")
+    plt.xlabel("No of Control steps")
+    plt.ylabel("Path deviation")
+    plt.show()
     plt.show()
     plt.ion()
     fig ,ax = plt.subplots(figsize = [70,70])
@@ -373,24 +389,42 @@ def main():
     ax.add_patch(sensor)
 
     #Initialize sensor rays
-    sensorLines  = []
-    for i in range(numRays):
-       temp, = ax.plot(1, 1, color = (0.6350, 0.0780, 0.1840), linestyle = '--')
-       sensorLines.append(temp)
+    #sensorLines  = []
+    #for i in range(numRays):
+    #   temp, = ax.plot(1, 1, color = (0.6350, 0.0780, 0.1840), linestyle = '--')
+    #   sensorLines.append(temp)
    
     #Initialize desired path and actual path
     lineDes, = ax.plot(1, 1, color = (0.4660, 0.6740, 0.1880))
     lineAct, = ax.plot(1, 1, color = 'b')
     
     #Initialize obstacles
+    obsx = [20.5, 21]
+    obsy = [12, 12.5]
+    RectW = obsx[1] - obsx[0]
+    RectH = obsy[1] - obsy[0]
+    obsx2 = [13.033606514801276, 13.033606514801276 + 0.5]
+    obsy2 = [22.463548210728447, 22.463548210728447 + 0.5]
+    RectW2 = obsx2[1] - obsx2[0]
+    RectH2 = obsy2[1] - obsy2[0]
     obs = Rectangle((obsx[0], obsy[0]), RectW, RectH)
     obs2 = Rectangle((obsx2[0], obsy2[0]), RectW2, RectH2)
+    ax.add_patch(obs)
+    ax.add_patch(obs2)
+    plot_grid(ax, obs_boundary, obs_rectangle, obs_circle)
+    
     pathAct = np.array(pathAct)
     for i in range(len(pathAct)):
-        start = time.time()
-        ax.add_patch(obs)
-        ax.add_patch(obs2)
-        plot_grid(ax, obs_boundary, obs_rectangle, obs_circle)
+        #start = time.time()
+        #obsx[0] = obsx[0] + velObs*stepTime
+        #obsy[0] = obsy[0] + velObs*stepTime
+        #obs = Rectangle((obsx[0], obsy[0]), RectW, RectH)
+        #ax.add_patch(obs)
+        #ax.add_patch(obs2)
+        if math.sqrt((pathAct[i][0] - obsx[0])**2 + (pathAct[i][1] - obsy[0])**2) <= dynm_thresh:
+            obsx[0] = obsx[0] + velObs*stepTime
+            obsy[0] = obsy[0] + velObs*stepTime
+        obs.set_xy((obsx[0], obsy[0]))
         lineDes.set_xdata(pathDes[:, 0])
         lineDes.set_ydata(pathDes[:, 1])
         lineAct.set_xdata(pathAct[0: i+1, 0])
@@ -399,14 +433,14 @@ def main():
         robotFig.set_angle((pathAct[i][2] / math.pi) * 180)
         sensorCenter = [pathAct[i][0] + (L/2 + sensorRad)*math.cos(pathAct[i][2]), pathAct[i][1] + (L/2 + sensorRad)*math.sin(pathAct[i][2])]
         sensor.set(center = (sensorCenter[0], sensorCenter[1]))
-        for j in range(numRays):
-            currTheta  = pathAct[i][2] - math.pi/2 + j*angleDiff
-            sensorLines[j].set_xdata([sensorCenter[0], sensorCenter[0] + rayLength*math.cos(currTheta)])
-            sensorLines[j].set_ydata([sensorCenter[1], sensorCenter[1] + rayLength*math.sin(currTheta)])
+        #for j in range(numRays):
+        #    currTheta  = pathAct[i][2] - math.pi/2 + j*angleDiff
+        #    sensorLines[j].set_xdata([sensorCenter[0], sensorCenter[0] + rayLength*math.cos(currTheta)])
+        #    sensorLines[j].set_ydata([sensorCenter[1], sensorCenter[1] + rayLength*math.sin(currTheta)])
         fig.canvas.draw()
         fig.canvas.flush_events()
-        end = time.time()
-        print("time taken : ", end - start)
+        #end = time.time()
+        #print("time taken : ", end - start)
         #time.sleep()
        
     
