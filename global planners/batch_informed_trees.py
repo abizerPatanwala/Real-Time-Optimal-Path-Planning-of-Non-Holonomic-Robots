@@ -165,9 +165,23 @@ class BITStar:
         plt.pause(0.01)
         plt.show()
         plt.close()
+        
         plt.figure()
         plt.plot(self.count_list, self.no_of_nodes)
+        plt.title('BIT*: No. of Nodes Explored vs No. of Iterations')
+        plt.legend()
+        plt.xlabel('No. of Iterations')
+        plt.ylabel('No. of Nodes')
         plt.show()
+        
+        plt.figure()
+        plt.plot(self.count_list, self.cost_list)
+        plt.title('BIT*: Cost vs No. of Iterations')
+        plt.legend()
+        plt.xlabel('No. of Iterations')
+        plt.ylabel('Cost')
+        plt.show()
+
 
     def ExtractPath(self):
         node = self.x_goal
