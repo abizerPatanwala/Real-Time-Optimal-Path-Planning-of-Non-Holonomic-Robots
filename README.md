@@ -2,6 +2,19 @@
 This project focuses on path planning of non-holonomic robots in dynamic environments. For the environment amazon warehouse environment is chosen in gazebo and created a 
 2d map of it. For global planners **AIT*** and **BIT*** are chosen and compared with **RRT**. For local planner **MPC** is used and compared with **APF**. Gazebo simulation is done with ROS2 Humble.
 
+
+## Global Planners:
+### AIT*
+![AIT* output in 2D environment](/outputs/ait*.gif)
+### BIT*
+![BIT* output in 2D environment](/outputs/bit*.gif)
+
+## Traversal with obstacles
+### 2D toy problem
+![trajectory traversal output in 2D environment](/outputs/mpc.gif)
+### Gazebo simulation
+![trajectory traversal output in warehouse environment](/outputs/gazebo.gif)
+
 ## Running the planner in 2D:
 To run the global planners in 2d, download the files from *global planners* folder and run the following commands:
 - *python3 batch_informed_trees.py* for BIT*
